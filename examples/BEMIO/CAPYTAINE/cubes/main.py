@@ -21,7 +21,7 @@ r_cube_body.inertia_matrix = r_cube_body.compute_rigid_body_inertia()
 r_cube_body.hydrostatic_stiffness = r_cube_body.immersed_part().compute_hydrostatic_stiffness()
 
 t_cube_mesh_file = os.path.join(input_data_dir, "t_cube.dat")
-t_cube_mesh = cpt.load_mesh(t_cube_mesh_file, file_format="dat")
+t_cube_mesh = cpt.load_mesh(t_cube_mesh_file, file_format="nemoh")
 t_cube_body = cpt.FloatingBody(
     mesh=t_cube_mesh,
     lid_mesh=t_cube_mesh.generate_lid(),
@@ -36,7 +36,8 @@ cubes_body = r_cube_body + t_cube_body
 # cubes_body.show()  # Uncomment to display the mesh in 3D for verification
 
 test_matrix = xr.Dataset(coords={
-    "omega": np.linspace(0.03, 15.0, 500),
+    "omega": np.linspace(0.1, 15.0, 500),
+    # Slightly lower range than other software because Capytaine does not currently implement kh<0.1.
     "radiating_dof": list(cubes_body.dofs),
     "wave_direction": np.linspace(0.0, np.pi/2, 10),
     "water_depth": [20.0],

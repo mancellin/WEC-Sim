@@ -23,7 +23,8 @@ body.hydrostatic_stiffness = body.immersed_part().compute_hydrostatic_stiffness(
 # body.show()  # Uncomment to display the mesh in 3D for verification
 
 test_matrix = xr.Dataset(coords={
-    "omega": np.linspace(0.1, 80, 800),
+    "omega": np.linspace(0.3, 80.0, 800),
+    # Slightly lower range than other software because Capytaine does not currently implement kh<0.1.
     "radiating_dof": list(body.dofs),
     "wave_direction": np.linspace(0, np.pi/2, 10),
     "water_depth": [2.20],
