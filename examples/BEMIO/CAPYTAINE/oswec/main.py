@@ -26,9 +26,14 @@ base_shift_mesh_file = os.path.join(input_data_dir, "base_shift.stl")
 base_shift_mesh = cpt.load_mesh(base_shift_mesh_file, file_format="stl")
 # Flap mesh file is symmetric, but the base shift mesh file is stl and cannot encode symmetry information.
 # We manually define the base shift mesh as symmetric to use the symmetry for the final computation
-base_shift_mesh = cpt.ReflectionSymmetricMesh(
-    base_shift_mesh.clipped(origin=(0, 0, 0), normal=(0, -1, 0)), plane="xOz"
-)
+if cpt.__version__ == "2.3.1":
+    base_shift_mesh = cpt.ReflectionSymmetricMesh(
+        base_shift_mesh.clipped(cpt.xOz_Plane), plane=cpt.xOz_Plane
+    )
+else:  # Expecting >= 3
+    base_shift_mesh = cpt.ReflectionSymmetricMesh(
+        base_shift_mesh.clipped(origin=(0, 0, 0), normal=(0, -1, 0)), plane="xOz"
+    )
 base_shift_body = cpt.FloatingBody(
     mesh=base_shift_mesh,
     # no lid for fully immersed base
